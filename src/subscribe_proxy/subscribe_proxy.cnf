@@ -1,0 +1,11 @@
+[cmn]
+home=/root/smothmq/src/subscribe_proxy
+sock_buf_kbyte=8192
+sync_conn_num=3
+listen=127.0.0.1:9930
+max_chunk_kbyte=2048
+
+[zk]
+server=127.0.0.1:2181
+auth=
+root=/smoth_mq

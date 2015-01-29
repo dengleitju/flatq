@@ -1,0 +1,94 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ([2.63])
+AC_INIT(cwx_zk_mq, 1.0)
+AM_INIT_AUTOMAKE(cwx_zk_mq, 1.0)
+m4_include([ax_cxx_compile_stdcxx_0x.m4])
+AC_CONFIG_SRCDIR([product_proxy/CwxProductProxyRecvHandler.cpp])
+AC_CONFIG_HEADERS([config.h])
+
+# Checks for programs.
+AC_PROG_CXX
+AC_PROG_CC
+AM_PROG_LIBTOOL
+
+AX_CXX_COMPILE_STDCXX_0X
+
+if test "x$ax_cv_cxx_compile_cxx0x_cxx" = "xyes" ; then
+  CXXFLAGS="$CXXFLAGS -std=c++0x"
+fi
+
+AC_DEFUN([LIBEVENT_DIR],[
+  
+  AC_ARG_WITH(
+    cwinux,
+    [  --with-cwinux[=DIR]        cwinux directory],
+    ,
+    [with_cwinux="no"]
+  )
+
+  AC_MSG_CHECKING(for libevent directory)
+ 
+  AC_ARG_WITH(
+    zk,
+    [  --with-zk[=DIR]        zookeeper c lib directory],
+    ,
+    [with_zk="no"]
+  )
+  AC_ARG_WITH(
+    openssl,
+    [  --with-openssl[=DIR]        openssl lib directory],
+    ,
+    [with_openssl="no"]
+  )
+
+  if test "$with_cwinux" = "no"; then
+    AC_MSG_ERROR( You need to specify the cwinux directory using --with-cwinux)
+  else
+    # make sure that a well known include file exists
+    if test -e $with_cwinux/include/app/CwxAppFramework.h; then
+      cwinux_dir=$with_cwinux
+      AC_MSG_RESULT(cwinux found!)
+    else
+      AC_MSG_ERROR( $with_cwinux not found.  Check the value you specified with --with-cwinux)
+    fi
+  fi
+
+  if test "$with_zk" = "no"; then
+    AC_MSG_ERROR( You need to specify the zookeeper directory using --with-zk)
+  else
+    # make sure that a well known include file exists
+    if test -e $with_zk/include/zookeeper.h; then
+      zk_dir=$with_zk
+      AC_MSG_RESULT(zookeeper found!)
+    else
+      AC_MSG_ERROR( $with_zk not found.  Check the value you specified with --with-zk)
+    fi
+  fi
+
+  if test "$with_openssl" = "no"; then
+    AC_MSG_ERROR( You need to specify the openssl directory using --with-openssl)
+  else
+    # make sure that a well known include file exists
+    if test -e $with_openssl/include/openssl/ssl.h; then
+      zk_dir=$with_openssl
+      AC_MSG_RESULT(openssl found!)
+    else
+      AC_MSG_ERROR( $with_openssl not found.  Check the value you specified with --with-openssl)
+    fi
+  fi
+])
+
+LIBEVENT_DIR
+
+# The AC_SUBST macro causes the variable to be saved in config.status
+AC_SUBST(cwinux_dir)
+AC_SUBST(zk_dir)
+AC_SUBST(openssl_dir)
+
+AC_CONFIG_FILES([Makefile
+                 mq/Makefile
+                 product_proxy/Makefile
+                 subscribe_proxy/Makefile])
+AC_OUTPUT
